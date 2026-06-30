@@ -333,7 +333,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Default hotel dates
   const today    = new Date();
-  const tomorrow = new Date(today); tomorrow.setDate(today.getDate() + 1);
   const dayAfter = new Date(today); dayAfter.setDate(today.getDate() + 3);
   document.getElementById('hotel-checkin').value  = tomorrow.toISOString().split('T')[0];
   document.getElementById('hotel-checkout').value = dayAfter.toISOString().split('T')[0];
