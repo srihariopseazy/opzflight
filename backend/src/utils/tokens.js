@@ -17,26 +17,27 @@ function verifyRefresh(token) {
   return jwt.verify(token, REFRESH_SECRET);
 }
 
-const COOKIE_OPTS_ACCESS = {
-  httpOnly: true,
-  sameSite: 'strict',
-  secure: process.env.NODE_ENV === 'production',
-  maxAge: 15 * 60 * 1000,
-};
+function isSecureRequest(req) {
+  return req.secure || req.headers['x-forwarded-proto'] === 'https';
+}
 
-const COOKIE_OPTS_REFRESH = {
-  httpOnly: true,
-  sameSite: 'strict',
-  secure: process.env.NODE_ENV === 'production',
-  maxAge: 7 * 24 * 60 * 60 * 1000,
-  path: '/api/auth',
-};
-
-function issueTokens(res, userPayload) {
+function issueTokens(res, userPayload, req) {
+  const secure  = isSecureRequest(req);
   const access  = signAccess(userPayload);
   const refresh = signRefresh({ id: userPayload.id });
-  res.cookie('access_token',  access,  COOKIE_OPTS_ACCESS);
-  res.cookie('refresh_token', refresh, COOKIE_OPTS_REFRESH);
+  res.cookie('access_token', access, {
+    httpOnly: true,
+    sameSite: 'strict',
+    secure,
+    maxAge: 15 * 60 * 1000,
+  });
+  res.cookie('refresh_token', refresh, {
+    httpOnly: true,
+    sameSite: 'strict',
+    secure,
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+    path: '/api/auth',
+  });
   return { access, refresh };
 }
 

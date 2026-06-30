@@ -40,7 +40,7 @@ router.post('/register',
       );
       const user = result.rows[0];
       const payload = { id: user.id, email: user.email, name: user.name, role: user.role };
-      issueTokens(res, payload);
+      issueTokens(res, payload, req);
       res.status(201).json({ success: true, user: payload });
     } catch (err) {
       next(err);
@@ -77,7 +77,7 @@ router.post('/login',
       }
 
       const payload = { id: user.id, email: user.email, name: user.name, role: user.role };
-      issueTokens(res, payload);
+      issueTokens(res, payload, req);
       res.json({ success: true, user: payload });
     } catch (err) {
       next(err);
@@ -129,10 +129,11 @@ router.post('/refresh', async (req, res, next) => {
     }
     const payload = { id: user.id, email: user.email, name: user.name, role: user.role };
     const access = signAccess(payload);
+    const secure = req.secure || req.headers['x-forwarded-proto'] === 'https';
     res.cookie('access_token', access, {
       httpOnly: true,
       sameSite: 'strict',
-      secure: process.env.NODE_ENV === 'production',
+      secure,
       maxAge: 15 * 60 * 1000,
     });
     res.json({ success: true, user: payload });
