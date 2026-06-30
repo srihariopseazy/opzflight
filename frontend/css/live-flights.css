@@ -1,0 +1,276 @@
+/* ─── Live Airline Schedules Section ─────────────────────────── */
+
+.live-section {
+  padding: var(--space-12) 0 var(--space-10);
+  background: var(--color-white);
+  border-top: 1px solid var(--color-gray-100);
+}
+
+/* Header row */
+.live-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-8);
+}
+.live-header-text {}
+.live-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.25rem, 3vw, 1.75rem);
+  font-weight: 800;
+  color: var(--color-gray-900);
+  letter-spacing: -0.02em;
+  margin-bottom: 0.3rem;
+}
+.live-sub {
+  font-size: 0.875rem;
+  color: var(--color-gray-400);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* Pulsing green dot = live data indicator */
+.live-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--color-mint);
+  flex-shrink: 0;
+  box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4);
+  animation: liveping 2s ease-out infinite;
+}
+@keyframes liveping {
+  0%   { box-shadow: 0 0 0 0   rgba(16,185,129,0.5); }
+  70%  { box-shadow: 0 0 0 8px rgba(16,185,129,0);   }
+  100% { box-shadow: 0 0 0 0   rgba(16,185,129,0);   }
+}
+
+.live-source-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: var(--color-gray-50);
+  border: 1px solid var(--color-gray-200);
+  border-radius: var(--radius-full);
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  color: var(--color-gray-500);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* Airline tabs */
+.live-tabs {
+  display: flex;
+  gap: var(--space-2);
+  margin-bottom: var(--space-6);
+  overflow-x: auto;
+  padding-bottom: 2px;
+}
+.live-tab {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-full);
+  border: 1.5px solid var(--color-gray-200);
+  background: var(--color-white);
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--color-gray-500);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+}
+.live-tab:hover { border-color: var(--color-gray-400); color: var(--color-gray-700); }
+.live-tab.active {
+  color: #fff;
+  border-color: transparent;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+.live-tab-iata {
+  font-size: 0.75rem;
+  opacity: 0.75;
+}
+
+/* Flight grid */
+.live-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--space-4);
+  min-height: 200px;
+}
+
+/* Individual flight card */
+.lf-card {
+  border: 1px solid var(--color-gray-100);
+  border-radius: var(--radius-xl);
+  padding: var(--space-5);
+  background: var(--color-white);
+  transition: box-shadow var(--transition-base), transform var(--transition-base);
+  position: relative;
+  overflow: hidden;
+}
+.lf-card:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+}
+/* Left accent stripe — uses airline brand color via inline style */
+.lf-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; bottom: 0;
+  width: 4px;
+}
+
+/* Card top: airline + flight number */
+.lf-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-4);
+}
+.lf-airline {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.lf-airline-logo {
+  width: 32px; height: 32px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 0.6875rem;
+  color: #fff;
+  flex-shrink: 0;
+}
+.lf-airline-name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.9375rem;
+  color: var(--color-gray-800);
+}
+.lf-flight-num {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1rem;
+  color: var(--color-gray-700);
+  letter-spacing: -0.01em;
+}
+
+/* Route row */
+.lf-route {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-1);
+}
+.lf-iata {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.5rem;
+  color: var(--color-gray-900);
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+.lf-route-line {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+.lf-route-dash {
+  height: 1px;
+  width: 100%;
+  background: var(--color-gray-200);
+}
+.lf-plane-icon { font-size: 0.75rem; color: var(--color-gray-400); line-height: 1; }
+.lf-airports {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: var(--space-4);
+}
+.lf-airport-name {
+  font-size: 0.6875rem;
+  color: var(--color-gray-400);
+  max-width: 45%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.lf-airport-name:last-child { text-align: right; }
+
+/* Times row */
+.lf-times {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-gray-100);
+}
+.lf-time-group { display: flex; flex-direction: column; gap: 1px; }
+.lf-time-label { font-size: 0.625rem; color: var(--color-gray-400); text-transform: uppercase; letter-spacing: 0.06em; }
+.lf-time {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.9375rem;
+  color: var(--color-gray-900);
+}
+.lf-date { font-size: 0.6875rem; color: var(--color-gray-400); }
+
+/* Status badge */
+.lf-status {
+  font-family: var(--font-display);
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.2rem 0.5rem;
+  border-radius: var(--radius-full);
+}
+.lf-status-scheduled { background: var(--color-sky-light);   color: var(--color-sky-dark); }
+.lf-status-active    { background: var(--color-mint-light);  color: var(--color-mint-dark); }
+.lf-status-landed    { background: var(--color-gray-100);    color: var(--color-gray-500); }
+.lf-status-cancelled { background: #FEE2E2; color: #B91C1C; }
+.lf-status-delayed   { background: var(--color-amber-light); color: var(--color-amber-dark); }
+.lf-status-unknown   { background: var(--color-gray-100);    color: var(--color-gray-400); }
+
+/* States */
+.live-loading, .live-empty, .live-quota, .live-error {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  padding: var(--space-12) var(--space-4);
+  text-align: center;
+}
+.live-loading .spinner-dark { width: 2rem; height: 2rem; border-width: 3px; }
+.live-empty-icon, .live-quota-icon { font-size: 2.5rem; opacity: 0.35; line-height: 1; }
+.live-empty h4, .live-quota h4, .live-error h4 {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: var(--color-gray-700);
+}
+.live-empty p, .live-quota p, .live-error p {
+  font-size: 0.875rem;
+  color: var(--color-gray-400);
+  max-width: 36ch;
+  line-height: 1.65;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .live-grid { grid-template-columns: 1fr; }
+  .live-tabs { gap: var(--space-1); }
+  .live-tab  { padding: 0.375rem 0.75rem; font-size: 0.8125rem; }
+}

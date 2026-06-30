@@ -1,0 +1,65 @@
+/* ── Confirmation page takeoff overlay ───────────────────────── */
+#takeoff-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: linear-gradient(
+    160deg,
+    #1a0550 0%,
+    #3730a3 35%,
+    #4f46e5 65%,
+    #0ea5e9 100%
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#takeoff-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+#confetti-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.takeoff-status {
+  position: absolute;
+  bottom: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  color: #fff;
+  pointer-events: none;
+}
+
+.takeoff-status-title {
+  font-family: var(--font-display, 'Inter', sans-serif);
+  font-size: clamp(1.25rem, 4vw, 2rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.5rem;
+}
+
+.takeoff-status-sub {
+  font-size: 0.9375rem;
+  color: rgba(255, 255, 255, 0.75);
+  font-weight: 500;
+}
+
+/* Confirmation content — hidden until overlay fades */
+#confirm-wrapper.confirm-slide-in {
+  animation: confirmSlideIn 0.5s ease both;
+}
+
+@keyframes confirmSlideIn {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book Flight — OPSEAZY</title>
+  <link rel="stylesheet" href="/css/theme.css">
+  <link rel="stylesheet" href="/css/navbar.css">
+  <link rel="stylesheet" href="/css/booking.css">
+</head>
+<body class="booking-page">
+
+  <div id="navbar-mount"></div>
+
+  <!-- Step indicator -->
+  <div class="booking-steps">
+    <div class="container">
+      <div class="steps-list">
+        <div class="step-item active" id="step-1">
+          <div class="step-num">1</div>
+          <span>Passenger Details</span>
+        </div>
+        <div class="step-connector" id="conn-1"></div>
+        <div class="step-item" id="step-2">
+          <div class="step-num">2</div>
+          <span>Review & Add-ons</span>
+        </div>
+        <div class="step-connector" id="conn-2"></div>
+        <div class="step-item" id="step-3">
+          <div class="step-num">3</div>
+          <span>Payment</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="booking-body">
+    <div class="container">
+      <div id="booking-loading" class="loading-state">
+        <div class="spinner spinner-lg"></div>
+        <p>Confirming fare…</p>
+      </div>
+
+      <!-- Step 1: Passenger Details -->
+      <div id="step-content-1" class="booking-layout hidden">
+        <div>
+          <!-- Flight summary recap -->
+          <div class="booking-section" id="flight-recap">
+            <div class="booking-section-header">
+              <div class="section-icon section-icon-sky">✈</div>
+              <h3>Your Flight</h3>
+            </div>
+            <div class="booking-section-body" id="flight-recap-body" style="padding:var(--space-4) var(--space-6);">
+              <!-- filled by JS -->
+            </div>
+          </div>
+
+          <!-- Passenger forms (one per passenger type) -->
+          <div id="passenger-forms-container"></div>
+
+          <button class="btn btn-primary btn-lg" id="btn-next-step1" style="width:100%;margin-top:var(--space-4);">
+            Continue to Review →
+          </button>
+        </div>
+
+        <!-- Fare sidebar -->
+        <div>
+          <div class="fare-summary">
+            <div class="fare-summary-card">
+              <div class="fare-summary-header">
+                <h3>Price Summary</h3>
+                <div class="fare-flight-info" id="sidebar-route">— → —</div>
+              </div>
+              <div class="fare-breakdown" id="sidebar-breakdown"></div>
+              <div class="fare-line-total">
+                <span>Total</span>
+                <span class="fare-total-value" id="sidebar-total">—</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 2: Review + Add-ons -->
+      <div id="step-content-2" class="booking-layout hidden">
+        <div>
+          <div class="booking-section">
+            <div class="booking-section-header">
+              <div class="section-icon section-icon-amber">📋</div>
+              <h3>Review Details</h3>
+            </div>
+            <div class="booking-section-body" id="review-body"></div>
+          </div>
+
+          <div class="booking-section">
+            <div class="booking-section-header">
+              <div class="section-icon section-icon-mint">🎒</div>
+              <h3>Add-ons <span style="font-size:0.8125rem;font-weight:500;color:var(--color-gray-400);">(Optional)</span></h3>
+            </div>
+            <div class="booking-section-body">
+              <div class="addons-grid">
+                <div class="addon-card" data-addon="meal" id="addon-meal">
+                  <div class="addon-icon">🍽</div>
+                  <div class="addon-name">In-flight Meal</div>
+                  <div class="addon-price">+ $12 / person</div>
+                </div>
+                <div class="addon-card" data-addon="baggage" id="addon-baggage">
+                  <div class="addon-icon">🧳</div>
+                  <div class="addon-name">Extra Baggage</div>
+                  <div class="addon-price">+ $25 / 10kg</div>
+                </div>
+                <div class="addon-card" data-addon="seat" id="addon-seat">
+                  <div class="addon-icon">💺</div>
+                  <div class="addon-name">Seat Selection</div>
+                  <div class="addon-price">+ $8 / person</div>
+                </div>
+                <div class="addon-card" data-addon="insurance" id="addon-insurance">
+                  <div class="addon-icon">🛡</div>
+                  <div class="addon-name">Travel Insurance</div>
+                  <div class="addon-price">+ $15 / person</div>
+                </div>
+              </div>
+              <p style="font-size:0.8125rem;color:var(--color-gray-400);margin-top:var(--space-3);">Add-ons are demo UI only and not charged in this sandbox.</p>
+            </div>
+          </div>
+
+          <div style="display:flex;gap:var(--space-3);">
+            <button class="btn btn-outline btn-lg" id="btn-back-step2" style="flex:1;">← Back</button>
+            <button class="btn btn-primary btn-lg" id="btn-next-step2" style="flex:2;">Proceed to Payment →</button>
+          </div>
+        </div>
+        <div>
+          <div class="fare-summary">
+            <div class="fare-summary-card">
+              <div class="fare-summary-header">
+                <h3>Price Summary</h3>
+                <div class="fare-flight-info" id="sidebar-route-2">— → —</div>
+              </div>
+              <div class="fare-breakdown" id="sidebar-breakdown-2"></div>
+              <div class="fare-line-total">
+                <span>Total</span>
+                <span class="fare-total-value" id="sidebar-total-2">—</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 3: Payment -->
+      <div id="step-content-3" class="booking-layout hidden">
+        <div>
+          <div class="booking-section">
+            <div class="booking-section-header">
+              <div class="section-icon section-icon-violet">💳</div>
+              <h3>Payment</h3>
+            </div>
+            <div class="booking-section-body">
+              <div class="payment-demo-badge">⚠ DEMO MODE — No real payment processed. Use any card details below.</div>
+
+              <div class="payment-card-preview">
+                <div style="font-size:0.6875rem;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:0.15em;">OPSEAZY Demo Card</div>
+                <div class="card-number-preview" id="card-num-preview">•••• •••• •••• 4242</div>
+                <div class="card-meta">
+                  <div class="card-meta-val">
+                    <div class="card-meta-label">CARD HOLDER</div>
+                    <div class="card-meta-value" id="card-holder-preview">YOUR NAME</div>
+                  </div>
+                  <div>
+                    <div class="card-meta-label">EXPIRES</div>
+                    <div class="card-meta-value">12/28</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="passenger-form-grid">
+                <div class="form-group">
+                  <label class="form-label" for="card-name">Name on Card</label>
+                  <input class="form-input" type="text" id="card-name" placeholder="Rahul Sharma" autocomplete="cc-name">
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="card-number">Card Number</label>
+                  <input class="form-input" type="text" id="card-number" placeholder="4242 4242 4242 4242" maxlength="19" autocomplete="cc-number">
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="card-expiry">Expiry</label>
+                  <input class="form-input" type="text" id="card-expiry" placeholder="MM/YY" maxlength="5">
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="card-cvv">CVV</label>
+                  <input class="form-input" type="text" id="card-cvv" placeholder="123" maxlength="4">
+                </div>
+              </div>
+
+              <div id="payment-error" class="form-error hidden" style="background:var(--color-orange-light);border-radius:var(--radius-md);padding:0.75rem;margin-top:var(--space-3);color:var(--color-orange-dark);font-weight:500;"></div>
+
+              <div style="display:flex;gap:var(--space-3);margin-top:var(--space-5);">
+                <button class="btn btn-outline btn-lg" id="btn-back-step3" style="flex:1;">← Back</button>
+                <button class="btn btn-primary btn-lg" id="btn-pay" style="flex:2;">
+                  🔒 Pay & Confirm Booking
+                </button>
+              </div>
+              <p style="font-size:0.75rem;color:var(--color-gray-400);margin-top:var(--space-3);text-align:center;">
+                This is a demo — no real card is charged. Transactions are simulated.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="fare-summary">
+            <div class="fare-summary-card">
+              <div class="fare-summary-header">
+                <h3>Order Summary</h3>
+                <div class="fare-flight-info" id="sidebar-route-3">— → —</div>
+              </div>
+              <div class="fare-breakdown" id="sidebar-breakdown-3"></div>
+              <div class="fare-line-total">
+                <span>Total Charged</span>
+                <span class="fare-total-value" id="sidebar-total-3">—</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="/js/utils.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/toast.js"></script>
+  <script src="/js/navbar.js"></script>
+  <script src="/js/booking.js"></script>
+</body>
+</html>

@@ -1,0 +1,242 @@
+/* ─── Booking Flow ───────────────────────────────────────────── */
+.booking-page { min-height: 100vh; background: var(--color-gray-50); }
+
+/* Progress stepper */
+.booking-steps {
+  background: var(--color-violet);
+  padding: var(--space-5) 0;
+}
+.steps-list {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  justify-content: center;
+}
+.step-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: rgb(255 255 255 / 0.5);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+.step-item.active { color: #fff; }
+.step-item.done { color: var(--color-mint); }
+.step-num {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  transition: all var(--transition-base);
+}
+.step-item.active .step-num { background: var(--color-orange); color: #fff; }
+.step-item.done .step-num { background: var(--color-mint); color: #fff; }
+.step-connector {
+  width: 64px;
+  height: 2px;
+  background: rgb(255 255 255 / 0.15);
+  margin: 0 var(--space-2);
+}
+.step-connector.done { background: var(--color-mint); }
+
+/* Main booking body */
+.booking-body {
+  padding: var(--space-8) 0 var(--space-16);
+}
+.booking-layout {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: var(--space-6);
+  align-items: flex-start;
+}
+
+/* Booking section card */
+.booking-section {
+  background: var(--color-white);
+  border: 1px solid var(--color-gray-100);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+  margin-bottom: var(--space-5);
+}
+.booking-section-header {
+  padding: var(--space-5) var(--space-6);
+  border-bottom: 1px solid var(--color-gray-100);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+.booking-section-header h3 { font-size: 1.0625rem; font-weight: 700; }
+.section-icon {
+  width: 36px; height: 36px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+}
+.section-icon-sky    { background: var(--color-sky-light); }
+.section-icon-violet { background: var(--color-violet-light); }
+.section-icon-mint   { background: var(--color-mint-light); }
+.section-icon-amber  { background: var(--color-amber-light); }
+
+.booking-section-body { padding: var(--space-6); }
+
+/* Passenger form */
+.passenger-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+}
+.passenger-form-grid .full-width { grid-column: 1 / -1; }
+
+/* Fare summary sidebar */
+.fare-summary {
+  position: sticky;
+  top: 80px;
+}
+.fare-summary-card {
+  background: var(--color-white);
+  border: 1px solid var(--color-gray-100);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+}
+.fare-summary-header {
+  background: linear-gradient(135deg, var(--color-violet), var(--color-sky));
+  padding: var(--space-5);
+  color: #fff;
+}
+.fare-summary-header h3 { font-size: 1rem; font-weight: 700; color: #fff; }
+.fare-flight-info {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+.fare-flight-arrow { color: rgb(255 255 255 / 0.6); }
+
+.fare-breakdown {
+  padding: var(--space-5);
+  border-bottom: 1px solid var(--color-gray-100);
+}
+.fare-line {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9375rem;
+  padding: 0.35rem 0;
+  color: var(--color-gray-600);
+}
+.fare-line-total {
+  display: flex;
+  justify-content: space-between;
+  padding: var(--space-4) var(--space-5);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.125rem;
+  color: var(--color-gray-900);
+}
+.fare-total-value { color: var(--color-orange); }
+
+/* Add-ons section */
+.addons-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+}
+.addon-card {
+  border: 1.5px solid var(--color-gray-200);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  text-align: center;
+}
+.addon-card:hover { border-color: var(--color-sky); background: var(--color-sky-light); }
+.addon-card.selected { border-color: var(--color-sky); background: var(--color-sky-light); }
+.addon-icon { font-size: 1.5rem; margin-bottom: var(--space-2); }
+.addon-name { font-size: 0.875rem; font-weight: 600; }
+.addon-price { font-size: 0.8125rem; color: var(--color-gray-500); margin-top: 0.125rem; }
+
+/* Mock Payment */
+.payment-card-preview {
+  background: linear-gradient(135deg, #1E293B, #334155);
+  border-radius: var(--radius-xl);
+  padding: var(--space-6);
+  color: #fff;
+  margin-bottom: var(--space-5);
+  position: relative;
+  overflow: hidden;
+}
+.payment-card-preview::before {
+  content: '';
+  position: absolute;
+  top: -40px; right: -40px;
+  width: 150px; height: 150px;
+  background: rgb(255 255 255 / 0.05);
+  border-radius: 50%;
+}
+.card-number-preview {
+  font-family: 'Courier New', monospace;
+  font-size: 1.25rem;
+  letter-spacing: 0.2em;
+  margin: var(--space-5) 0 var(--space-3);
+}
+.card-meta { display: flex; gap: var(--space-8); }
+.card-meta-label { font-size: 0.6875rem; color: rgb(255 255 255 / 0.5); text-transform: uppercase; letter-spacing: 0.1em; }
+.card-meta-value { font-size: 0.9375rem; font-weight: 600; }
+
+.payment-demo-badge {
+  background: var(--color-amber-light);
+  border: 1px solid var(--color-amber);
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-4);
+  font-size: 0.8125rem;
+  color: var(--color-amber-dark);
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: var(--space-5);
+}
+
+/* Confirmation page */
+.confirm-hero {
+  text-align: center;
+  padding: var(--space-12) var(--space-4);
+}
+.confirm-icon {
+  width: 80px; height: 80px;
+  background: var(--color-mint-light);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  margin: 0 auto var(--space-6);
+}
+.pnr-display {
+  background: var(--color-violet-light);
+  border: 2px solid var(--color-violet);
+  border-radius: var(--radius-xl);
+  padding: var(--space-6);
+  display: inline-block;
+  margin: var(--space-5) 0;
+}
+.pnr-label { font-size: 0.8125rem; color: var(--color-gray-500); font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; }
+.pnr-value { font-family: var(--font-display); font-size: 2.5rem; font-weight: 800; color: var(--color-violet); letter-spacing: 0.1em; }
+
+/* ─── Responsive ─────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .booking-layout { grid-template-columns: 1fr; }
+  .fare-summary { position: static; }
+}
+@media (max-width: 600px) {
+  .passenger-form-grid { grid-template-columns: 1fr; }
+  .addons-grid { grid-template-columns: 1fr; }
+}

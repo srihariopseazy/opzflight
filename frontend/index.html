@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="OPSEAZY — Search and book flights worldwide. Real-time prices, airline comparison, seamless booking.">
+  <title>OPSEAZY — Book Flights Worldwide</title>
+  <link rel="stylesheet" href="/css/theme.css">
+  <link rel="stylesheet" href="/css/navbar.css">
+  <link rel="stylesheet" href="/css/home.css">
+  <link rel="stylesheet" href="/css/carousel.css">
+  <link rel="stylesheet" href="/css/live-flights.css">
+  <link rel="stylesheet" href="/css/hero-3d.css">
+  <link rel="stylesheet" href="/css/hotels.css">
+</head>
+<body>
+
+  <!-- Navbar mount point -->
+  <div id="navbar-mount"></div>
+
+  <!-- ─── Hero ─────────────────────────────────────────────────── -->
+  <section class="hero">
+    <!-- Three.js canvas — sits below hero text (z-index:1) -->
+    <div id="hero-canvas-wrap">
+      <canvas id="hero-canvas"></canvas>
+    </div>
+    <div class="container hero-content">
+      <div class="hero-eyebrow">
+        <span class="hero-eyebrow-dot"></span>
+        Demo Platform &mdash; Simulated Data
+      </div>
+      <h1>Book Flights with<br><span class="hero-accent">Clarity & Speed.</span></h1>
+      <p class="hero-sub">
+        A full-stack booking platform demo — compare simulated fares, explore routes,
+        and experience a production-quality booking flow end-to-end.
+      </p>
+      <div class="hero-demo-badge">
+        ⚡ Demo Platform &nbsp;·&nbsp; Simulated flight data
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Search Card ───────────────────────────────────────────── -->
+  <div class="search-card-wrapper">
+    <div class="container">
+      <div class="search-card card" id="search-card">
+
+        <!-- Module selector -->
+        <div class="module-tabs-row" id="module-tabs-row">
+          <button class="module-tab active" data-module="flights">✈ Flights</button>
+          <button class="module-tab" data-module="hotels">🏨 Hotels</button>
+          <button class="module-tab coming-soon" data-module="packages" title="Coming soon">📦 Packages</button>
+          <button class="module-tab coming-soon" data-module="cars"     title="Coming soon">🚗 Cars</button>
+          <button class="module-tab coming-soon" data-module="taxi"     title="Coming soon">🚕 Taxi</button>
+          <button class="module-tab coming-soon" data-module="insurance" title="Coming soon">🛡 Insurance</button>
+        </div>
+
+        <!-- ── FLIGHTS form (default) ── -->
+        <div id="flights-search-form">
+          <!-- Trip type tabs -->
+          <div class="search-card-header">
+            <button class="trip-type-btn active" data-type="one-way" id="tab-one-way">✈ One Way</button>
+            <button class="trip-type-btn" data-type="round-trip" id="tab-round-trip">⇌ Round Trip</button>
+          </div>
+
+          <div class="search-card-body">
+          <!-- Airport row -->
+          <div class="search-airports-row">
+            <!-- Origin -->
+            <div class="airport-field" id="origin-field">
+              <span class="airport-field-icon">🛫</span>
+              <label class="airport-input-label" for="origin-input">From</label>
+              <input class="airport-input airport-code-big" id="origin-input" type="text"
+                placeholder="DEL" maxlength="100" autocomplete="new-password" spellcheck="false" aria-autocomplete="list" aria-label="Origin airport">
+              <span class="airport-input-sub" id="origin-city">Delhi, India</span>
+              <div class="autocomplete-dropdown" id="origin-dropdown" role="listbox"></div>
+            </div>
+
+            <!-- Swap -->
+            <button class="swap-btn" id="swap-btn" title="Swap airports" aria-label="Swap origin and destination">⇌</button>
+
+            <!-- Destination -->
+            <div class="airport-field" id="dest-field">
+              <span class="airport-field-icon">🛬</span>
+              <label class="airport-input-label" for="dest-input">To</label>
+              <input class="airport-input airport-code-big" id="dest-input" type="text"
+                placeholder="BOM" maxlength="100" autocomplete="new-password" spellcheck="false" aria-autocomplete="list" aria-label="Destination airport">
+              <span class="airport-input-sub" id="dest-city">Mumbai, India</span>
+              <div class="autocomplete-dropdown" id="dest-dropdown" role="listbox"></div>
+            </div>
+          </div>
+
+          <!-- Date + Passenger row -->
+          <div class="search-options-row">
+            <!-- Departure date -->
+            <div class="date-field">
+              <label class="field-label" for="depart-date">Departure</label>
+              <div class="field-input-wrapper">
+                <span class="field-icon">📅</span>
+                <input class="field-input" type="date" id="depart-date" required>
+              </div>
+            </div>
+
+            <!-- Return date (hidden for one-way) -->
+            <div class="date-field" id="return-date-wrapper" style="display:none;">
+              <label class="field-label" for="return-date">Return</label>
+              <div class="field-input-wrapper">
+                <span class="field-icon">📅</span>
+                <input class="field-input" type="date" id="return-date">
+              </div>
+            </div>
+
+            <!-- Passengers & class -->
+            <div class="pax-field" style="position:relative;">
+              <label class="field-label">Travellers & Class</label>
+              <div class="field-input-wrapper">
+                <span class="field-icon">👤</span>
+                <button type="button" class="field-input" id="pax-trigger" style="text-align:left;cursor:pointer;">1 Adult • Economy</button>
+              </div>
+              <!-- Passenger popover -->
+              <div class="pax-popover" id="pax-popover">
+                <div class="pax-row">
+                  <div class="pax-label">
+                    <h4>Adults</h4>
+                    <small>12 years & above</small>
+                  </div>
+                  <div class="pax-counter">
+                    <button class="pax-counter-btn" id="adult-dec" aria-label="Decrease adults">−</button>
+                    <span class="pax-count" id="adult-count">1</span>
+                    <button class="pax-counter-btn" id="adult-inc" aria-label="Increase adults">+</button>
+                  </div>
+                </div>
+                <div class="pax-row">
+                  <div class="pax-label">
+                    <h4>Children</h4>
+                    <small>2–11 years</small>
+                  </div>
+                  <div class="pax-counter">
+                    <button class="pax-counter-btn" id="child-dec" aria-label="Decrease children">−</button>
+                    <span class="pax-count" id="child-count">0</span>
+                    <button class="pax-counter-btn" id="child-inc" aria-label="Increase children">+</button>
+                  </div>
+                </div>
+                <div class="pax-row">
+                  <div class="pax-label">
+                    <h4>Infants</h4>
+                    <small>Under 2 years</small>
+                  </div>
+                  <div class="pax-counter">
+                    <button class="pax-counter-btn" id="infant-dec" aria-label="Decrease infants">−</button>
+                    <span class="pax-count" id="infant-count">0</span>
+                    <button class="pax-counter-btn" id="infant-inc" aria-label="Increase infants">+</button>
+                  </div>
+                </div>
+                <select class="class-select" id="cabin-class">
+                  <option value="ECONOMY">Economy</option>
+                  <option value="PREMIUM_ECONOMY">Premium Economy</option>
+                  <option value="BUSINESS">Business</option>
+                  <option value="FIRST">First Class</option>
+                </select>
+                <button class="btn btn-secondary btn-full pax-done-btn" id="pax-done">Done</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+          <!-- Search CTA -->
+          <div class="search-cta">
+            <button class="btn-search" id="btn-search" type="button">
+              <span>🔍</span> Search Flights
+            </button>
+          </div>
+        </div><!-- /flights-search-form -->
+
+        <!-- ── HOTELS form ── -->
+        <div id="hotels-search-form" class="hidden">
+          <div class="search-card-body">
+            <!-- Destination city row -->
+            <div class="hotel-search-row" style="margin-bottom:var(--space-4);position:relative;">
+              <div class="field-with-icon" style="position:relative;">
+                <span class="field-prefix-icon">🏨</span>
+                <label class="airport-input-label" for="hotel-city-input">Destination City</label>
+                <input class="airport-input" id="hotel-city-input" type="text"
+                  placeholder="Mumbai, Goa, Dubai…"
+                  autocomplete="new-password" spellcheck="false">
+                <div class="autocomplete-dropdown" id="hotel-city-dropdown" role="listbox"></div>
+              </div>
+            </div>
+            <!-- Dates + guests row -->
+            <div class="search-options-row">
+              <div class="date-field">
+                <label class="field-label" for="hotel-checkin">Check-in</label>
+                <div class="field-input-wrapper">
+                  <span class="field-icon">📅</span>
+                  <input class="field-input" type="date" id="hotel-checkin">
+                </div>
+              </div>
+              <div class="date-field">
+                <label class="field-label" for="hotel-checkout">Check-out</label>
+                <div class="field-input-wrapper">
+                  <span class="field-icon">📅</span>
+                  <input class="field-input" type="date" id="hotel-checkout">
+                </div>
+              </div>
+              <div class="pax-field">
+                <label class="field-label" for="hotel-guests">Guests</label>
+                <div class="field-input-wrapper">
+                  <span class="field-icon">👤</span>
+                  <select class="field-input" id="hotel-guests" style="cursor:pointer;">
+                    <option value="1">1 Guest</option>
+                    <option value="2" selected>2 Guests</option>
+                    <option value="3">3 Guests</option>
+                    <option value="4">4 Guests</option>
+                    <option value="5">5 Guests</option>
+                    <option value="6">6 Guests</option>
+                  </select>
+                </div>
+              </div>
+              <div class="pax-field">
+                <label class="field-label" for="hotel-rooms">Rooms</label>
+                <div class="field-input-wrapper">
+                  <span class="field-icon">🛏</span>
+                  <select class="field-input" id="hotel-rooms" style="cursor:pointer;">
+                    <option value="1" selected>1 Room</option>
+                    <option value="2">2 Rooms</option>
+                    <option value="3">3 Rooms</option>
+                    <option value="4">4 Rooms</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="search-cta">
+            <button class="btn-search" id="btn-search-hotels" type="button">
+              <span>🔍</span> Search Hotels
+            </button>
+          </div>
+        </div><!-- /hotels-search-form -->
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Upcoming Flights Carousel ──────────────────────────── -->
+  <section class="carousel-section" id="carousel-section">
+    <div class="container">
+      <div class="carousel-header">
+        <div>
+          <div class="carousel-title">Upcoming Flights</div>
+          <div class="carousel-sub">Popular routes — click any card to pre-fill search</div>
+        </div>
+        <div class="carousel-controls">
+          <button class="carousel-arrow" id="carousel-prev" aria-label="Previous flights">&#8592;</button>
+          <button class="carousel-arrow" id="carousel-next" aria-label="Next flights">&#8594;</button>
+        </div>
+      </div>
+      <div class="carousel-viewport">
+        <div class="carousel-track" id="carousel-track"></div>
+      </div>
+      <div class="carousel-dots" id="carousel-dots"></div>
+    </div>
+  </section>
+
+  <!-- ─── Live Airline Schedules ──────────────────────────────── -->
+  <section class="live-section" id="live-section">
+    <div class="container">
+      <div class="live-header">
+        <div class="live-header-text">
+          <div class="live-title">Live IndiGo &amp; Air India Schedules</div>
+          <div class="live-sub">
+            <span class="live-dot"></span>
+            Real scheduled flight data &mdash; reference only, bookings are simulated
+          </div>
+        </div>
+        <div class="live-source-badge">
+          Data: AviationStack API
+        </div>
+      </div>
+
+      <!-- Airline tabs -->
+      <div class="live-tabs" id="live-tabs" role="tablist">
+        <button class="live-tab active" data-iata="6E" role="tab" aria-selected="true">
+          IndiGo <span class="live-tab-iata">6E</span>
+        </button>
+        <button class="live-tab" data-iata="AI" role="tab" aria-selected="false">
+          Air India <span class="live-tab-iata">AI</span>
+        </button>
+      </div>
+
+      <!-- Flight cards grid -->
+      <div class="live-grid" id="live-grid" role="tabpanel">
+        <!-- Populated by live-flights.js -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Main content area -->
+  <main>
+    <div class="container">
+
+      <!-- Sandbox notice (always shown in test mode) -->
+      <div class="sandbox-notice" id="sandbox-notice">
+        <div class="sandbox-notice-icon">⚠</div>
+        <div>
+          <h4>Demo Environment</h4>
+          <p>This is a demo environment — try these sample routes for guaranteed results:</p>
+          <ul>
+            <li><strong>DEL → BOM</strong> — Any date in the next 60 days</li>
+            <li><strong>JFK → LAX</strong> — Any date in the next 30 days</li>
+            <li><strong>LHR → CDG</strong> — Any date in the next 30 days</li>
+            <li><strong>DXB → SIN</strong> — Any date in the next 60 days</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Popular Routes -->
+      <section class="popular-routes-section">
+        <h2 class="section-title">Popular Routes</h2>
+        <p class="section-sub">Click a route to pre-fill the search</p>
+        <div class="route-cards-grid" id="popular-routes"></div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer style="background:var(--color-gray-900);color:var(--color-gray-400);padding:2rem 0;text-align:center;font-size:0.875rem;">
+    <div class="container">
+      <div style="font-family:var(--font-display);font-weight:700;font-size:1rem;color:#fff;margin-bottom:0.5rem;">OPSEAZY ✈</div>
+      <p>Flight booking demo application — not a real booking service.</p>
+      <p style="margin-top:0.5rem;">© 2025 OPSEAZY. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="/js/utils.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/toast.js"></script>
+  <script src="/js/navbar.js"></script>
+  <script src="/js/home.js"></script>
+  <script src="/js/carousel.js"></script>
+  <script src="/js/live-flights.js"></script>
+  <!-- ES module: Three.js is self-hosted (/js/three.core.min.js), no CDN dependency.
+       type="module" is implicitly deferred — runs after DOM is fully parsed. -->
+  <script type="module" src="/js/hero-3d.js"></script>
+</body>
+</html>

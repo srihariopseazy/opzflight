@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Booking Confirmed — OPSEAZY</title>
+  <link rel="stylesheet" href="/css/theme.css">
+  <link rel="stylesheet" href="/css/navbar.css">
+  <link rel="stylesheet" href="/css/booking.css">
+  <link rel="stylesheet" href="/css/takeoff-scene.css">
+  <style>
+    .eticket-card { background: var(--color-white); border: 2px solid var(--color-mint); border-radius: var(--radius-2xl); max-width: 640px; margin: 0 auto var(--space-8); padding: var(--space-8); box-shadow: var(--shadow-xl); }
+    .eticket-header { text-align: center; border-bottom: 2px dashed var(--color-gray-200); padding-bottom: var(--space-6); margin-bottom: var(--space-6); }
+    .eticket-row { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: var(--space-4); margin-bottom: var(--space-5); }
+    .eticket-field-label { font-size: 0.75rem; font-weight: 600; color: var(--color-gray-400); text-transform: uppercase; letter-spacing: 0.06em; }
+    .eticket-field-value { font-family: var(--font-display); font-weight: 700; font-size: 1rem; color: var(--color-gray-900); margin-top: 0.125rem; }
+    @media print {
+      .navbar, .no-print { display: none !important; }
+      .eticket-card { box-shadow: none; border: 2px solid #ccc; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Takeoff animation overlay — plays first, then fades to reveal confirmation -->
+  <div id="takeoff-overlay">
+    <canvas id="takeoff-canvas"></canvas>
+    <canvas id="confetti-canvas"></canvas>
+    <div class="takeoff-status">
+      <div class="takeoff-status-title">Your flight is taking off!</div>
+      <div class="takeoff-status-sub">Booking confirmed — bon voyage</div>
+    </div>
+  </div>
+
+  <!-- Confirmation content — hidden until takeoff animation completes -->
+  <div id="confirm-wrapper" class="hidden">
+
+  <div id="navbar-mount" class="no-print"></div>
+
+  <div style="background:var(--color-mint);padding:var(--space-6) 0;text-align:center;" class="no-print">
+    <div class="container">
+      <div class="confirm-icon" style="margin:0 auto var(--space-3);">✓</div>
+      <h1 style="color:var(--color-white);font-size:2rem;font-weight:800;font-family:var(--font-display);">Booking Confirmed!</h1>
+      <p style="color:rgba(255,255,255,0.85);font-size:1.0625rem;margin-top:0.5rem;">Your e-ticket is ready. Safe travels!</p>
+    </div>
+  </div>
+
+  <div style="padding:var(--space-8) 0 var(--space-12);">
+    <div class="container">
+
+      <div id="confirm-loading" class="loading-state"><div class="spinner spinner-lg"></div></div>
+      <div id="confirm-content" class="hidden">
+
+        <!-- E-ticket card -->
+        <div class="eticket-card" id="eticket">
+          <div class="eticket-header">
+            <div style="font-family:var(--font-display);font-weight:800;font-size:1.5rem;color:var(--color-violet);margin-bottom:var(--space-2);">✈ OPSEAZY</div>
+            <div style="font-size:0.875rem;color:var(--color-gray-400);">Electronic Ticket / Booking Reference</div>
+            <div class="pnr-display" style="margin-top:var(--space-4);">
+              <div class="pnr-label">PNR / Booking Reference</div>
+              <div class="pnr-value" id="confirm-pnr">—</div>
+            </div>
+          </div>
+
+          <div class="eticket-row">
+            <div>
+              <div class="eticket-field-label">Route</div>
+              <div class="eticket-field-value" id="confirm-route">— → —</div>
+            </div>
+            <div>
+              <div class="eticket-field-label">Travel Date</div>
+              <div class="eticket-field-value" id="confirm-date">—</div>
+            </div>
+            <div>
+              <div class="eticket-field-label">Class</div>
+              <div class="eticket-field-value" id="confirm-class">—</div>
+            </div>
+            <div>
+              <div class="eticket-field-label">Passengers</div>
+              <div class="eticket-field-value" id="confirm-pax">—</div>
+            </div>
+          </div>
+
+          <div style="border-top:2px dashed var(--color-gray-200);padding-top:var(--space-5);">
+            <div class="eticket-field-label" style="margin-bottom:var(--space-3);">Passengers</div>
+            <div id="confirm-passengers"></div>
+          </div>
+
+          <div style="border-top:2px dashed var(--color-gray-200);padding-top:var(--space-5);margin-top:var(--space-5);">
+            <div class="eticket-row" style="margin-bottom:0;">
+              <div>
+                <div class="eticket-field-label">Total Charged</div>
+                <div class="eticket-field-value" id="confirm-fare" style="color:var(--color-orange);font-size:1.375rem;">—</div>
+              </div>
+              <div>
+                <div class="eticket-field-label">Status</div>
+                <div><span class="badge badge-mint" style="font-size:0.9375rem;padding:0.35rem 0.875rem;">✓ CONFIRMED</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top:var(--space-6);text-align:center;font-size:0.75rem;color:var(--color-gray-400);">
+            DEMO BOOKING — This is not a real airline ticket. For demonstration purposes only.
+          </div>
+        </div>
+
+        <!-- Action buttons -->
+        <div style="display:flex;gap:var(--space-3);justify-content:center;flex-wrap:wrap;" class="no-print">
+          <button class="btn btn-outline btn-lg" onclick="window.print()">🖨 Print / Save PDF</button>
+          <a href="/pages/my-bookings.html" class="btn btn-secondary btn-lg">📋 My Bookings</a>
+          <a href="/" class="btn btn-primary btn-lg">✈ Book Another Flight</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  </div><!-- /confirm-wrapper -->
+
+  <script src="/js/utils.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/toast.js"></script>
+  <script src="/js/navbar.js"></script>
+  <script type="module" src="/js/takeoff-scene.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      renderNavbar('');
+      await Auth.tryRestoreSession();
+
+      const booking = JSON.parse(sessionStorage.getItem('opseazy_booking_result') || 'null');
+      document.getElementById('confirm-loading').classList.add('hidden');
+      document.getElementById('confirm-content').classList.remove('hidden');
+
+      if (!booking) {
+        document.getElementById('confirm-content').innerHTML = `<div class="empty-state"><div class="empty-icon">✈</div><h3>Booking not found</h3><a href="/" class="btn btn-secondary">← Home</a></div>`;
+        return;
+      }
+
+      document.getElementById('confirm-pnr').textContent    = booking.pnr || '—';
+      document.getElementById('confirm-route').textContent  = `${booking.origin_code} → ${booking.destination_code}`;
+      document.getElementById('confirm-date').textContent   = formatDate(booking.departure_date);
+      document.getElementById('confirm-class').textContent  = (booking.cabin_class || '').replace('_', ' ');
+      document.getElementById('confirm-pax').textContent    = `${booking.passenger_count} Passenger${booking.passenger_count > 1 ? 's' : ''}`;
+      document.getElementById('confirm-fare').textContent   = formatCurrency(booking.total_fare, booking.currency);
+
+      const passengers = booking.passengers || [];
+      document.getElementById('confirm-passengers').innerHTML = passengers.map((p, i) => `
+        <div style="display:flex;gap:var(--space-5);align-items:center;padding:0.5rem 0;border-bottom:1px solid var(--color-gray-100);">
+          <div style="font-weight:700;min-width:2rem;">${i + 1}.</div>
+          <div style="flex:1;font-weight:600;">${escHtml(p.full_name || '—')}</div>
+          <div style="color:var(--color-gray-500);font-size:0.875rem;text-transform:capitalize;">${p.passenger_type || ''}</div>
+          <div style="color:var(--color-gray-500);font-size:0.875rem;">${p.dob || ''}</div>
+        </div>`).join('');
+
+      Toast.success('Booking confirmed! Your PNR is ' + booking.pnr);
+      sessionStorage.removeItem('opseazy_selected_flight');
+      sessionStorage.removeItem('opseazy_search_params');
+      sessionStorage.removeItem('opseazy_booking_result');
+    });
+  </script>
+</body>
+</html>

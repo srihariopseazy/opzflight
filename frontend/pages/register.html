@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Account — OPSEAZY</title>
+  <link rel="stylesheet" href="/css/theme.css">
+  <link rel="stylesheet" href="/css/auth.css">
+</head>
+<body>
+  <div class="auth-page">
+    <div class="auth-brand">
+      <div class="auth-brand-logo">
+        <div class="auth-brand-logo-icon">✈</div>
+        <div>
+          <div style="font-family:var(--font-display);font-weight:800;font-size:1.75rem;color:#fff;">OPSEAZY</div>
+          <div style="font-size:0.75rem;color:rgba(255,255,255,0.7);letter-spacing:0.1em;text-transform:uppercase;">Flight Booking</div>
+        </div>
+      </div>
+      <h1>Start your journey<br>with OPSEAZY.</h1>
+      <p>Join millions of travellers booking smarter, faster, and cheaper with real-time flight data.</p>
+      <div class="auth-features">
+        <div class="auth-feature">
+          <div class="auth-feature-icon">🔍</div>
+          <div><h4>Real-Time Search</h4><p>Live fares covering hundreds of airlines.</p></div>
+        </div>
+        <div class="auth-feature">
+          <div class="auth-feature-icon">🔒</div>
+          <div><h4>Secure Booking</h4><p>Your data protected with industry-standard encryption.</p></div>
+        </div>
+        <div class="auth-feature">
+          <div class="auth-feature-icon">📱</div>
+          <div><h4>Instant Confirmation</h4><p>PNR and e-ticket delivered immediately.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="auth-form-panel">
+      <div class="auth-form-inner">
+        <h2 class="auth-form-title">Create Account</h2>
+        <p class="auth-form-sub">Already have an account? <a href="/pages/login.html" class="auth-link">Log in</a></p>
+
+        <form class="auth-form" id="register-form" novalidate>
+          <div class="form-group">
+            <label class="form-label" for="name">Full Name</label>
+            <input class="form-input" type="text" id="name" placeholder="Rahul Sharma" required autocomplete="name">
+            <span class="form-error hidden" id="name-error"></span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="email">Email</label>
+            <input class="form-input" type="email" id="email" placeholder="rahul@example.com" required autocomplete="email">
+            <span class="form-error hidden" id="email-error"></span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="phone">Phone (optional)</label>
+            <input class="form-input" type="tel" id="phone" placeholder="+91 98765 43210" autocomplete="tel">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="password">Password</label>
+            <div class="password-field">
+              <input class="form-input" type="password" id="password" placeholder="Min. 8 characters" required autocomplete="new-password">
+              <button type="button" class="password-toggle" id="toggle-pw">👁</button>
+            </div>
+            <span class="form-error hidden" id="password-error"></span>
+          </div>
+
+          <div id="form-error" class="form-error hidden" style="background:var(--color-orange-light);border-radius:var(--radius-md);padding:0.75rem 1rem;color:var(--color-orange-dark);font-weight:500;"></div>
+
+          <button class="btn btn-primary btn-full btn-lg" type="submit" id="btn-register">Create Account</button>
+        </form>
+
+        <div class="auth-switch">Already have an account? <a href="/pages/login.html" class="auth-link">Log in</a></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/utils.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/toast.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('toggle-pw').addEventListener('click', () => {
+        const pw = document.getElementById('password');
+        pw.type = pw.type === 'password' ? 'text' : 'password';
+      });
+
+      document.getElementById('register-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('btn-register');
+        const errEl = document.getElementById('form-error');
+        errEl.classList.add('hidden');
+
+        const name = document.getElementById('name').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const phone = document.getElementById('phone').value.trim();
+        const password = document.getElementById('password').value;
+
+        let valid = true;
+        if (!name) { showFieldError('name', 'Name is required'); valid = false; }
+        if (!email || !email.includes('@')) { showFieldError('email', 'Valid email required'); valid = false; }
+        if (!password || password.length < 8) { showFieldError('password', 'Password must be at least 8 characters'); valid = false; }
+        if (!valid) return;
+
+        setButtonLoading(btn, true);
+        try {
+          const data = await api.register({ name, email, phone, password });
+          Auth.setUser(data.user);
+          Toast.success('Account created! Welcome to OPSEAZY.');
+          setTimeout(() => { window.location.href = '/'; }, 800);
+        } catch (err) {
+          errEl.textContent = err.message || 'Registration failed. Please try again.';
+          errEl.classList.remove('hidden');
+        } finally {
+          setButtonLoading(btn, false, 'Create Account');
+        }
+      });
+
+      function showFieldError(field, msg) {
+        const input = document.getElementById(field);
+        const errEl = document.getElementById(`${field}-error`);
+        if (!input || !errEl) return;
+        input.classList.add('error');
+        errEl.textContent = msg;
+        errEl.classList.remove('hidden');
+        input.addEventListener('input', () => { input.classList.remove('error'); errEl.classList.add('hidden'); }, { once: true });
+      }
+    });
+  </script>
+</body>
+</html>

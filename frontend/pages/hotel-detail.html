@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hotel Details — OPSEAZY</title>
+  <link rel="stylesheet" href="/css/theme.css">
+  <link rel="stylesheet" href="/css/navbar.css">
+  <link rel="stylesheet" href="/css/hotels.css">
+</head>
+<body class="hotel-detail-page">
+
+  <div id="navbar-mount"></div>
+
+  <div id="page-loading" class="loading-state" style="min-height:60vh;">
+    <div class="spinner spinner-lg"></div>
+    <p>Loading hotel details…</p>
+  </div>
+
+  <div id="page-content" class="hidden">
+    <!-- Photo header -->
+    <img id="hotel-hero-img" class="hotel-hero-img" src="" alt="">
+
+    <!-- Info bar -->
+    <div class="hotel-detail-header">
+      <div class="container">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+          <div>
+            <div class="stars-display" id="hotel-stars"></div>
+            <h1 class="hotel-detail-name" id="hotel-name">—</h1>
+            <div class="hotel-detail-meta" id="hotel-meta"></div>
+          </div>
+          <a id="back-link" href="/pages/hotel-results.html" class="btn btn-outline">← All Hotels</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="hotel-detail-layout">
+
+        <!-- Left column: description + amenities + rooms -->
+        <div>
+          <div class="hotel-detail-section">
+            <div class="hotel-detail-section-header">📋 About This Property</div>
+            <div class="hotel-detail-section-body">
+              <p id="hotel-description" style="line-height:1.7;color:var(--color-gray-600);"></p>
+              <div class="hotel-demo-pill" style="margin-top:var(--space-4);">⚡ Demo property · Simulated data — not a real hotel</div>
+            </div>
+          </div>
+
+          <div class="hotel-detail-section">
+            <div class="hotel-detail-section-header">✓ Hotel Amenities</div>
+            <div class="hotel-detail-section-body">
+              <div class="amenities-grid" id="hotel-amenities"></div>
+            </div>
+          </div>
+
+          <div class="hotel-detail-section">
+            <div class="hotel-detail-section-header">🛏 Available Rooms</div>
+            <div class="hotel-detail-section-body" id="rooms-container">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Right column: booking summary -->
+        <div>
+          <div class="hotel-booking-summary">
+            <div class="hotel-booking-summary-header">Your Stay</div>
+            <div class="hotel-booking-summary-body">
+              <div class="hotel-summary-row">
+                <span class="hotel-summary-label">Check-in</span>
+                <span class="hotel-summary-value" id="sum-checkin">—</span>
+              </div>
+              <div class="hotel-summary-row">
+                <span class="hotel-summary-label">Check-out</span>
+                <span class="hotel-summary-value" id="sum-checkout">—</span>
+              </div>
+              <div class="hotel-summary-row">
+                <span class="hotel-summary-label">Duration</span>
+                <span class="hotel-summary-value" id="sum-nights">—</span>
+              </div>
+              <div class="hotel-summary-row">
+                <span class="hotel-summary-label">Guests</span>
+                <span class="hotel-summary-value" id="sum-guests">—</span>
+              </div>
+              <div class="hotel-summary-row">
+                <span class="hotel-summary-label">Rooms</span>
+                <span class="hotel-summary-value" id="sum-rooms">—</span>
+              </div>
+              <hr class="hotel-summary-divider">
+              <p style="font-size:0.8125rem;color:var(--color-gray-400);line-height:1.5;">
+                Select a room above to proceed to booking. All prices include taxes.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/utils.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/toast.js"></script>
+  <script src="/js/navbar.js"></script>
+  <script src="/js/hotel-detail.js"></script>
+</body>
+</html>

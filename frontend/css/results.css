@@ -1,0 +1,335 @@
+/* ─── Results Layout ─────────────────────────────────────────── */
+.results-page { min-height: 100vh; background: var(--color-gray-50); }
+
+.results-header {
+  background: var(--color-violet);
+  padding: var(--space-6) 0;
+  color: #fff;
+}
+.results-header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+}
+.results-summary h2 {
+  font-size: 1.375rem;
+  font-weight: 700;
+  color: #fff;
+}
+.results-summary-sub { color: rgb(255 255 255 / 0.75); font-size: 0.9375rem; margin-top: 0.125rem; }
+
+.results-body {
+  padding: var(--space-6) 0 var(--space-12);
+}
+.results-grid {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: var(--space-6);
+  align-items: flex-start;
+}
+
+/* ─── Filters Sidebar ────────────────────────────────────────── */
+.filters-sidebar {
+  position: sticky;
+  top: 80px;
+}
+.filter-card {
+  background: var(--color-white);
+  border: 1px solid var(--color-gray-100);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+}
+.filter-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid var(--color-gray-100);
+}
+.filter-card-header h3 { font-size: 1rem; font-weight: 700; }
+.btn-reset { font-size: 0.8125rem; color: var(--color-sky); background: none; border: none; cursor: pointer; }
+.btn-reset:hover { color: var(--color-sky-dark); }
+
+.filter-section { padding: var(--space-4) var(--space-5); border-bottom: 1px solid var(--color-gray-100); }
+.filter-section:last-child { border-bottom: none; }
+.filter-section-title { font-size: 0.8125rem; font-weight: 700; color: var(--color-gray-600); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: var(--space-3); }
+
+/* Custom checkbox/radio */
+.filter-option {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0.3rem 0;
+  cursor: pointer;
+}
+.filter-option input[type="checkbox"],
+.filter-option input[type="radio"] {
+  appearance: none;
+  width: 18px; height: 18px;
+  border: 2px solid var(--color-gray-300);
+  border-radius: 4px;
+  cursor: pointer;
+  position: relative;
+  flex-shrink: 0;
+  transition: all var(--transition-fast);
+}
+.filter-option input[type="radio"] { border-radius: 50%; }
+.filter-option input[type="checkbox"]:checked { background: var(--color-sky); border-color: var(--color-sky); }
+.filter-option input[type="checkbox"]:checked::after {
+  content: '✓';
+  color: #fff;
+  font-size: 11px;
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+}
+.filter-option input[type="radio"]:checked { border-color: var(--color-sky); }
+.filter-option input[type="radio"]:checked::after {
+  content: '';
+  width: 8px; height: 8px;
+  background: var(--color-sky);
+  border-radius: 50%;
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+}
+.filter-option-label { font-size: 0.9375rem; color: var(--color-gray-700); }
+.filter-count { margin-left: auto; font-size: 0.75rem; color: var(--color-gray-400); }
+
+/* Price range slider */
+.price-range-wrapper { margin-top: var(--space-2); }
+.price-range-input {
+  width: 100%;
+  appearance: none;
+  height: 4px;
+  background: var(--color-gray-200);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+}
+.price-range-input::-webkit-slider-thumb {
+  appearance: none;
+  width: 18px; height: 18px;
+  background: var(--color-sky);
+  border-radius: 50%;
+  border: 2px solid #fff;
+  box-shadow: var(--shadow-md);
+  cursor: pointer;
+}
+.price-range-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: var(--space-2);
+  font-size: 0.8125rem;
+  color: var(--color-gray-600);
+  font-weight: 600;
+}
+
+/* ─── Sort Bar ────────────────────────────────────────────────── */
+.sort-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: var(--color-white);
+  border: 1px solid var(--color-gray-100);
+  border-radius: var(--radius-xl);
+  padding: var(--space-3) var(--space-5);
+  margin-bottom: var(--space-4);
+  flex-wrap: wrap;
+  box-shadow: var(--shadow-card);
+}
+.sort-label { font-size: 0.875rem; font-weight: 600; color: var(--color-gray-500); margin-right: var(--space-2); }
+.sort-btn {
+  padding: 0.4rem 0.875rem;
+  border-radius: var(--radius-md);
+  border: 1.5px solid var(--color-gray-200);
+  background: transparent;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-gray-600);
+  cursor: pointer;
+  font-family: var(--font-display);
+  transition: all var(--transition-fast);
+}
+.sort-btn:hover { border-color: var(--color-sky); color: var(--color-sky); }
+.sort-btn.active { background: var(--color-sky); border-color: var(--color-sky); color: #fff; }
+
+.results-count {
+  margin-left: auto;
+  font-size: 0.875rem;
+  color: var(--color-gray-500);
+  font-weight: 500;
+}
+
+/* ─── Flight Cards ────────────────────────────────────────────── */
+.flight-list { display: flex; flex-direction: column; gap: var(--space-3); }
+
+.flight-card {
+  background: var(--color-white);
+  border: 1px solid var(--color-gray-100);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+  transition: box-shadow var(--transition-fast), transform var(--transition-fast);
+  cursor: pointer;
+}
+.flight-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-1px); }
+
+.flight-card-main {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: var(--space-5);
+  align-items: center;
+  padding: var(--space-5);
+}
+
+/* Airline info */
+.airline-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 80px;
+}
+.airline-logo {
+  width: 44px; height: 44px;
+  border-radius: var(--radius-md);
+  background: var(--color-gray-100);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 0.75rem;
+  color: var(--color-violet);
+  object-fit: contain;
+  overflow: hidden;
+}
+.airline-logo img { width: 100%; height: 100%; object-fit: contain; }
+.airline-name { font-size: 0.75rem; font-weight: 600; color: var(--color-gray-500); text-align: center; }
+.flight-number { font-size: 0.6875rem; color: var(--color-gray-400); }
+
+/* Flight route */
+.flight-route {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: var(--space-4);
+}
+.route-time { display: flex; flex-direction: column; }
+.route-time-value {
+  font-family: var(--font-display);
+  font-size: 1.375rem;
+  font-weight: 700;
+  color: var(--color-gray-900);
+  line-height: 1;
+}
+.route-time-city { font-size: 0.8125rem; color: var(--color-gray-500); margin-top: 0.125rem; }
+.route-time-iata { font-size: 0.9375rem; font-weight: 700; color: var(--color-gray-700); }
+
+.route-middle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  min-width: 120px;
+}
+.route-duration { font-size: 0.8125rem; font-weight: 600; color: var(--color-gray-500); }
+.route-line-wrapper {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  width: 100%;
+}
+.route-line {
+  flex: 1;
+  height: 2px;
+  background: var(--color-gray-200);
+  position: relative;
+}
+.route-line::before {
+  content: '';
+  position: absolute;
+  right: -6px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 5px solid transparent;
+  border-left: 7px solid var(--color-gray-300);
+}
+.route-stops-badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-gray-600);
+  white-space: nowrap;
+}
+.route-stops-badge.nonstop { color: var(--color-mint-dark); }
+.route-stops-badge.one-stop { color: var(--color-amber-dark); }
+.route-stops-badge.multi-stop { color: #DC2626; }
+
+/* Price area */
+.flight-price-area {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-2);
+  min-width: 150px;
+}
+.flight-fare {
+  font-family: var(--font-display);
+  font-size: 1.625rem;
+  font-weight: 800;
+  color: var(--color-orange);
+  line-height: 1;
+}
+.flight-fare-label { font-size: 0.75rem; color: var(--color-gray-400); }
+.btn-book-flight {
+  padding: 0.6rem 1.25rem;
+  background: var(--color-orange);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-md);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.9375rem;
+  transition: all var(--transition-fast);
+}
+.btn-book-flight:hover { background: var(--color-orange-dark); }
+
+/* Card Footer (expandable) */
+.flight-card-footer {
+  border-top: 1px solid var(--color-gray-100);
+  padding: 0.75rem var(--space-5);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--color-gray-50);
+  font-size: 0.875rem;
+}
+.flight-badges { display: flex; gap: var(--space-2); flex-wrap: wrap; }
+.flight-detail-toggle {
+  font-size: 0.8125rem;
+  color: var(--color-sky);
+  font-weight: 600;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: color var(--transition-fast);
+}
+.flight-detail-toggle:hover { color: var(--color-sky-dark); }
+
+/* ─── Responsive ─────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .results-grid { grid-template-columns: 1fr; }
+  .filters-sidebar { position: static; }
+}
+@media (max-width: 640px) {
+  .flight-card-main { grid-template-columns: 1fr; gap: var(--space-4); }
+  .flight-price-area { align-items: flex-start; }
+  .flight-route { grid-template-columns: 1fr auto 1fr; }
+}

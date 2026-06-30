@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Bookings — OPSEAZY</title>
+  <link rel="stylesheet" href="/css/theme.css">
+  <link rel="stylesheet" href="/css/navbar.css">
+  <link rel="stylesheet" href="/css/hotels.css">
+  <style>
+    .my-bookings-page { min-height: 100vh; background: var(--color-gray-50); }
+    .page-header { background: var(--color-violet); padding: var(--space-8) 0; color: #fff; }
+    .page-header h1 { font-size: 1.75rem; font-weight: 800; color: #fff; }
+    .page-header-sub { color: rgba(255,255,255,0.75); margin-top: 0.25rem; }
+    .page-body { padding: var(--space-8) 0 var(--space-12); }
+
+    /* Type filter tabs */
+    .bookings-type-tabs { display: flex; gap: 0.5rem; margin-bottom: var(--space-6); flex-wrap: wrap; }
+    .bookings-type-tab  {
+      padding: 0.5rem 1.125rem;
+      border: 1.5px solid var(--color-gray-200);
+      border-radius: var(--radius-full);
+      background: var(--color-white);
+      font-weight: 600;
+      font-size: 0.875rem;
+      color: var(--color-gray-500);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+    .bookings-type-tab.active { border-color: var(--color-violet); background: var(--color-violet); color: #fff; }
+    .bookings-type-tab:hover:not(.active) { border-color: var(--color-gray-300); color: var(--color-gray-700); }
+
+    .booking-list { display: flex; flex-direction: column; gap: var(--space-4); }
+    .booking-item { background: var(--color-white); border: 1px solid var(--color-gray-100); border-radius: var(--radius-xl); box-shadow: var(--shadow-card); overflow: hidden; }
+    .booking-item-header { display: flex; align-items: center; justify-content: space-between; padding: var(--space-5) var(--space-6); border-bottom: 1px solid var(--color-gray-100); flex-wrap: wrap; gap: var(--space-3); }
+    .booking-ref { font-family: var(--font-display); font-size: 1.25rem; font-weight: 800; color: var(--color-violet); letter-spacing: 0.05em; }
+    .booking-item-body { padding: var(--space-5) var(--space-6); display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: var(--space-4); }
+    .booking-field-label { font-size: 0.75rem; font-weight: 600; color: var(--color-gray-400); text-transform: uppercase; letter-spacing: 0.05em; }
+    .booking-field-value { font-weight: 700; font-size: 1rem; color: var(--color-gray-800); margin-top: 0.125rem; }
+    .booking-item-footer { padding: var(--space-4) var(--space-6); background: var(--color-gray-50); border-top: 1px solid var(--color-gray-100); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--space-3); }
+    .btn-cancel { color: #DC2626; background: none; border: 1.5px solid #DC2626; border-radius: var(--radius-md); padding: 0.4rem 0.875rem; font-size: 0.875rem; font-weight: 600; font-family: var(--font-display); cursor: pointer; transition: all 150ms; }
+    .btn-cancel:hover { background: #FEF2F2; }
+  </style>
+</head>
+<body class="my-bookings-page">
+
+  <div id="navbar-mount"></div>
+
+  <div class="page-header">
+    <div class="container">
+      <h1>My Bookings</h1>
+      <div class="page-header-sub" id="bookings-sub">Your travel history</div>
+    </div>
+  </div>
+
+  <div class="page-body">
+    <div class="container">
+      <div id="bookings-loading" class="loading-state">
+        <div class="spinner spinner-lg"></div>
+        <p>Loading your bookings…</p>
+      </div>
+
+      <div id="bookings-ready" class="hidden">
+        <!-- Type filter tabs -->
+        <div class="bookings-type-tabs" id="type-tabs">
+          <button class="bookings-type-tab active" data-filter="all">All</button>
+          <button class="bookings-type-tab" data-filter="flight">✈ Flights</button>
+          <button class="bookings-type-tab" data-filter="hotel">🏨 Hotels</button>
+        </div>
+
+        <div id="bookings-empty" class="empty-state hidden">
+          <div class="empty-icon">🎫</div>
+          <h3>No bookings yet</h3>
+          <p>When you book a flight or hotel, it will appear here.</p>
+          <a href="/" class="btn btn-primary" style="margin-top:1rem;">✈ Search Now</a>
+        </div>
+        <div class="booking-list" id="bookings-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/utils.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/toast.js"></script>
+  <script src="/js/navbar.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      renderNavbar('bookings');
+      await Auth.tryRestoreSession();
+      if (!Auth.requireAuth()) return;
+
+      const user = Auth.getUser();
+      document.getElementById('bookings-sub').textContent = `Logged in as ${user?.name || ''}`;
+
+      let allItems = [];
+      let activeFilter = 'all';
+
+      function renderList() {
+        const list = document.getElementById('bookings-list');
+        const empty = document.getElementById('bookings-empty');
+        const filtered = activeFilter === 'all'
+          ? allItems
+          : allItems.filter(b => b._type === activeFilter);
+
+        if (!filtered.length) { empty.classList.remove('hidden'); list.innerHTML = ''; return; }
+        empty.classList.add('hidden');
+
+        list.innerHTML = filtered.map(b => {
+          const typeBadge = b._type === 'hotel'
+            ? `<span class="booking-type-badge booking-type-hotel">🏨 Hotel</span>`
+            : `<span class="booking-type-badge booking-type-flight">✈ Flight</span>`;
+
+          const statusBadge = `<span class="badge badge-${b.status === 'confirmed' ? 'mint' : b.status === 'cancelled' ? 'orange' : 'amber'}" style="font-size:0.875rem;padding:0.35rem 0.875rem;">${b.status.toUpperCase()}</span>`;
+
+          const ref  = b._type === 'hotel' ? b.booking_ref : b.pnr;
+          const date = b._type === 'hotel' ? b.created_at : b.created_at;
+
+          let bodyFields = '';
+          if (b._type === 'hotel') {
+            bodyFields = `
+              <div><div class="booking-field-label">Hotel</div><div class="booking-field-value">${escHtml(b.hotel_name)}</div></div>
+              <div><div class="booking-field-label">Room</div><div class="booking-field-value">${escHtml(b.room_type)}</div></div>
+              <div><div class="booking-field-label">City</div><div class="booking-field-value">${escHtml(b.city)}</div></div>
+              <div><div class="booking-field-label">Check-in</div><div class="booking-field-value">${formatDate(b.checkin_date)}</div></div>
+              <div><div class="booking-field-label">Check-out</div><div class="booking-field-value">${formatDate(b.checkout_date)}</div></div>
+              <div><div class="booking-field-label">Guests / Rooms</div><div class="booking-field-value">${b.guests}G · ${b.rooms}R</div></div>
+              <div><div class="booking-field-label">Total Fare</div><div class="booking-field-value" style="color:var(--color-orange);">${formatCurrency(b.total_fare, b.currency)}</div></div>`;
+          } else {
+            bodyFields = `
+              <div><div class="booking-field-label">Route</div><div class="booking-field-value">${escHtml(b.origin_code)} → ${escHtml(b.destination_code)}</div></div>
+              <div><div class="booking-field-label">Departure</div><div class="booking-field-value">${formatDate(b.departure_date)}</div></div>
+              <div><div class="booking-field-label">Trip Type</div><div class="booking-field-value" style="text-transform:capitalize;">${b.trip_type}</div></div>
+              <div><div class="booking-field-label">Class</div><div class="booking-field-value">${(b.cabin_class || '').replace('_', ' ')}</div></div>
+              <div><div class="booking-field-label">Passengers</div><div class="booking-field-value">${b.passenger_count}</div></div>
+              <div><div class="booking-field-label">Total Fare</div><div class="booking-field-value" style="color:var(--color-orange);">${formatCurrency(b.total_fare, b.currency)}</div></div>`;
+          }
+
+          const cancelBtn = b.status === 'confirmed'
+            ? `<button class="btn-cancel" onclick="cancelBooking('${b._type}', ${b.id}, this)">Cancel</button>`
+            : `<span style="font-size:0.875rem;color:var(--color-gray-400);">${b.status === 'cancelled' ? 'Cancelled' : ''}</span>`;
+
+          return `
+            <div class="booking-item" id="booking-${b._type}-${b.id}">
+              <div class="booking-item-header">
+                <div style="display:flex;align-items:center;gap:var(--space-3);">
+                  ${typeBadge}
+                  <div>
+                    <div class="booking-ref">${escHtml(ref)}</div>
+                    <div style="font-size:0.875rem;color:var(--color-gray-500);margin-top:0.125rem;">Booked ${formatDateTime(date)}</div>
+                  </div>
+                </div>
+                ${statusBadge}
+              </div>
+              <div class="booking-item-body">${bodyFields}</div>
+              <div class="booking-item-footer">
+                <div style="font-size:0.875rem;color:var(--color-gray-500);">
+                  ${b._type === 'flight' && b.trip_type === 'round-trip' && b.return_date ? `Return: ${formatDate(b.return_date)}` : ''}
+                </div>
+                ${cancelBtn}
+              </div>
+            </div>`;
+        }).join('');
+      }
+
+      // Type tab switching
+      document.getElementById('type-tabs').addEventListener('click', e => {
+        const tab = e.target.closest('.bookings-type-tab');
+        if (!tab) return;
+        document.querySelectorAll('.bookings-type-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        activeFilter = tab.dataset.filter;
+        renderList();
+      });
+
+      // Load both in parallel
+      try {
+        const [flightData, hotelData] = await Promise.allSettled([
+          api.myBookings(),
+          api.myHotelBookings(),
+        ]);
+
+        const flights = (flightData.status === 'fulfilled' ? flightData.value.bookings : []) || [];
+        const hotels  = (hotelData.status  === 'fulfilled' ? hotelData.value.bookings  : []) || [];
+
+        allItems = [
+          ...flights.map(b => ({ ...b, _type: 'flight' })),
+          ...hotels.map(b  => ({ ...b, _type: 'hotel'  })),
+        ].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+        document.getElementById('bookings-loading').classList.add('hidden');
+        document.getElementById('bookings-ready').classList.remove('hidden');
+        renderList();
+      } catch (err) {
+        document.getElementById('bookings-loading').classList.add('hidden');
+        Toast.error(err.message || 'Failed to load bookings');
+      }
+    });
+
+    async function cancelBooking(type, id, btn) {
+      if (!confirm('Cancel this booking? This cannot be undone.')) return;
+      btn.disabled = true; btn.textContent = 'Cancelling…';
+      try {
+        if (type === 'hotel') {
+          await api.cancelHotelBooking(id);
+        } else {
+          await api.cancelBooking(id);
+        }
+        Toast.success('Booking cancelled.');
+        const item = document.getElementById(`booking-${type}-${id}`);
+        const badge = item?.querySelector('.badge');
+        if (badge) { badge.textContent = 'CANCELLED'; badge.className = 'badge badge-orange'; badge.style = 'font-size:0.875rem;padding:0.35rem 0.875rem;'; }
+        btn.closest('.booking-item-footer').innerHTML = `<span style="font-size:0.875rem;color:var(--color-gray-400);">Cancelled</span>`;
+      } catch (err) {
+        Toast.error(err.message || 'Failed to cancel');
+        btn.disabled = false; btn.textContent = 'Cancel';
+      }
+    }
+  </script>
+</body>
+</html>

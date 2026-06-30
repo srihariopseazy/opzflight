@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hotel Booked — OPSEAZY</title>
+  <link rel="stylesheet" href="/css/theme.css">
+  <link rel="stylesheet" href="/css/navbar.css">
+  <link rel="stylesheet" href="/css/hotels.css">
+</head>
+<body class="hotel-confirm-page">
+
+  <div id="navbar-mount"></div>
+
+  <!-- Banner -->
+  <div class="hotel-confirm-banner">
+    <div class="container">
+      <div style="font-size:3rem;margin-bottom:var(--space-3);">🏨✓</div>
+      <h1>Hotel Booked!</h1>
+      <p>Your room is confirmed. Check your details below — enjoy your stay!</p>
+    </div>
+  </div>
+
+  <div style="padding:var(--space-8) 0 var(--space-16);">
+    <div class="container">
+
+      <div id="confirm-loading" class="loading-state"><div class="spinner spinner-lg"></div></div>
+      <div id="confirm-content" class="hidden">
+
+        <div class="hotel-eticket" id="hotel-eticket">
+          <div class="hotel-eticket-header">
+            <div style="font-family:var(--font-display);font-weight:800;font-size:1.5rem;color:var(--color-violet);">🏨 OPSEAZY Hotels</div>
+            <div style="font-size:0.875rem;color:var(--color-gray-400);">Hotel Booking Confirmation</div>
+            <div class="hotel-ref-display">
+              <div class="hotel-ref-label">Booking Reference</div>
+              <div class="hotel-ref-value" id="confirm-ref">—</div>
+            </div>
+          </div>
+
+          <!-- Hotel details grid -->
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:var(--space-4);margin-bottom:var(--space-6);">
+            <div>
+              <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--color-gray-400);">Hotel</div>
+              <div style="font-family:var(--font-display);font-weight:700;font-size:1rem;" id="confirm-hotel">—</div>
+            </div>
+            <div>
+              <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--color-gray-400);">Room Type</div>
+              <div style="font-family:var(--font-display);font-weight:700;font-size:1rem;" id="confirm-room">—</div>
+            </div>
+            <div>
+              <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--color-gray-400);">City</div>
+              <div style="font-family:var(--font-display);font-weight:700;font-size:1rem;" id="confirm-city">—</div>
+            </div>
+            <div>
+              <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--color-gray-400);">Guests / Rooms</div>
+              <div style="font-family:var(--font-display);font-weight:700;font-size:1rem;" id="confirm-guests">—</div>
+            </div>
+          </div>
+
+          <div style="border-top:2px dashed var(--color-gray-200);padding-top:var(--space-5);">
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:var(--space-4);margin-bottom:var(--space-5);">
+              <div>
+                <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--color-gray-400);">Check-in</div>
+                <div style="font-family:var(--font-display);font-weight:700;" id="confirm-checkin">—</div>
+              </div>
+              <div>
+                <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--color-gray-400);">Check-out</div>
+                <div style="font-family:var(--font-display);font-weight:700;" id="confirm-checkout">—</div>
+              </div>
+              <div>
+                <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--color-gray-400);">Duration</div>
+                <div style="font-family:var(--font-display);font-weight:700;" id="confirm-nights">—</div>
+              </div>
+            </div>
+
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:var(--space-3);">
+              <div>
+                <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--color-gray-400);">Total Charged</div>
+                <div style="font-family:var(--font-display);font-size:1.5rem;font-weight:800;color:var(--color-orange);" id="confirm-fare">—</div>
+              </div>
+              <div>
+                <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--color-gray-400);">Status</div>
+                <span class="badge badge-mint" style="font-size:0.9375rem;padding:0.35rem 0.875rem;">✓ CONFIRMED</span>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top:var(--space-6);text-align:center;font-size:0.75rem;color:var(--color-gray-400);">
+            DEMO BOOKING — This is not a real hotel reservation. For demonstration purposes only.
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div style="display:flex;gap:var(--space-3);justify-content:center;flex-wrap:wrap;">
+          <button class="btn btn-outline btn-lg" onclick="window.print()">🖨 Print Confirmation</button>
+          <a href="/pages/my-bookings.html" class="btn btn-secondary btn-lg">📋 My Bookings</a>
+          <a href="/" class="btn btn-primary btn-lg">✈ Book Another</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/utils.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/toast.js"></script>
+  <script src="/js/navbar.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      renderNavbar('');
+      await Auth.tryRestoreSession();
+
+      const booking = JSON.parse(sessionStorage.getItem('opseazy_hotel_booking_result') || 'null');
+      document.getElementById('confirm-loading').classList.add('hidden');
+      document.getElementById('confirm-content').classList.remove('hidden');
+
+      if (!booking) {
+        document.getElementById('confirm-content').innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">🏨</div>
+            <h3>Booking not found</h3>
+            <a href="/" class="btn btn-secondary">← Home</a>
+          </div>`;
+        return;
+      }
+
+      document.getElementById('confirm-ref').textContent     = booking.booking_ref || '—';
+      document.getElementById('confirm-hotel').textContent   = booking.hotel_name  || '—';
+      document.getElementById('confirm-room').textContent    = booking.room_type   || '—';
+      document.getElementById('confirm-city').textContent    = booking.city        || '—';
+      document.getElementById('confirm-guests').textContent  = `${booking.guests} guest${booking.guests > 1 ? 's' : ''} · ${booking.rooms} room${booking.rooms > 1 ? 's' : ''}`;
+      document.getElementById('confirm-checkin').textContent  = formatDate(booking.checkin_date);
+      document.getElementById('confirm-checkout').textContent = formatDate(booking.checkout_date);
+      document.getElementById('confirm-nights').textContent   = `${booking.nights} night${booking.nights !== 1 ? 's' : ''}`;
+      document.getElementById('confirm-fare').textContent     = formatCurrency(booking.total_fare, booking.currency || 'INR');
+
+      Toast.success('Hotel booked! Ref: ' + booking.booking_ref);
+      sessionStorage.removeItem('opseazy_hotel_booking_result');
+    });
+  </script>
+</body>
+</html>

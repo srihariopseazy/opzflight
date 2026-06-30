@@ -1,0 +1,34 @@
+/* ─── Three.js hero canvas ───────────────────────────────────────── */
+#hero-canvas-wrap {
+  position: absolute;
+  inset: 0;
+  width: 100%;          /* explicit so ResizeObserver reports real contentRect */
+  height: 100%;
+  z-index: 1;           /* behind text (z-index:2) and search card */
+  pointer-events: none;
+  overflow: hidden;
+}
+
+#hero-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Fallback: shown when WebGL is unavailable or JS is disabled */
+#hero-webgl-fallback {
+  display: none;
+}
+
+/* When canvas wrapper is hidden (fallback mode), show fallback message */
+#hero-canvas-wrap.hidden + #hero-webgl-fallback {
+  display: block;
+}
+
+/* Search card dims when the landing animation starts */
+.search-card.search-launching {
+  opacity: 0.6;
+  transform: scale(0.97);
+  pointer-events: none;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}

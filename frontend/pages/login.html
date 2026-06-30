@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Log In — OPSEAZY</title>
+  <link rel="stylesheet" href="/css/theme.css">
+  <link rel="stylesheet" href="/css/auth.css">
+</head>
+<body>
+  <div class="auth-page">
+    <!-- Brand panel -->
+    <div class="auth-brand">
+      <div class="auth-brand-logo">
+        <div class="auth-brand-logo-icon">✈</div>
+        <div>
+          <div style="font-family:var(--font-display);font-weight:800;font-size:1.75rem;color:#fff;">OPSEAZY</div>
+          <div style="font-size:0.75rem;color:rgba(255,255,255,0.7);letter-spacing:0.1em;text-transform:uppercase;">Flight Booking</div>
+        </div>
+      </div>
+      <h1>Welcome back,<br>traveller.</h1>
+      <p>Log in to access your bookings, manage trips, and unlock personalized fare alerts.</p>
+      <div class="auth-features">
+        <div class="auth-feature">
+          <div class="auth-feature-icon">🎫</div>
+          <div>
+            <h4>Manage Bookings</h4>
+            <p>View, download, or cancel your bookings anytime.</p>
+          </div>
+        </div>
+        <div class="auth-feature">
+          <div class="auth-feature-icon">💺</div>
+          <div>
+            <h4>Saved Preferences</h4>
+            <p>Your travel preferences saved and ready.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Form panel -->
+    <div class="auth-form-panel">
+      <div class="auth-form-inner">
+        <h2 class="auth-form-title">Log In</h2>
+        <p class="auth-form-sub">Don't have an account? <a href="/pages/register.html" class="auth-link">Sign up free</a></p>
+
+        <form class="auth-form" id="login-form" novalidate>
+          <div class="form-group">
+            <label class="form-label" for="email">Email address</label>
+            <input class="form-input" type="email" id="email" name="email" placeholder="you@example.com" required autocomplete="email">
+            <span class="form-error hidden" id="email-error"></span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="password">Password</label>
+            <div class="password-field">
+              <input class="form-input" type="password" id="password" name="password" placeholder="••••••••" required autocomplete="current-password">
+              <button type="button" class="password-toggle" id="toggle-pw" aria-label="Toggle password visibility">👁</button>
+            </div>
+            <span class="form-error hidden" id="password-error"></span>
+          </div>
+
+          <div id="form-error" class="form-error hidden" style="background:var(--color-orange-light);border-radius:var(--radius-md);padding:0.75rem 1rem;color:var(--color-orange-dark);font-weight:500;"></div>
+
+          <button class="btn btn-primary btn-full btn-lg" type="submit" id="btn-login">Log In</button>
+        </form>
+
+        <div class="auth-demo-divider"><span>or skip the signup</span></div>
+        <button type="button" class="btn btn-outline btn-full btn-lg" id="btn-demo-login"
+                style="border-color:var(--color-violet);color:var(--color-violet);gap:0.5rem;">
+          ⚡ Try Demo Account
+        </button>
+        <p style="text-align:center;font-size:0.75rem;color:var(--color-gray-400);margin-top:0.5rem;">
+          Logs in as <strong>demo@opseazy.com</strong> — no signup needed
+        </p>
+
+        <div class="auth-switch">New to OPSEAZY? <a href="/pages/register.html" class="auth-link">Create account</a></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/utils.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/toast.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      // If already logged in, redirect
+      await Auth.tryRestoreSession();
+      if (Auth.isLoggedIn()) {
+        const p = getParams();
+        window.location.href = p.redirect || '/';
+        return;
+      }
+
+      // Demo login button — auto-fills credentials and submits
+      document.getElementById('btn-demo-login').addEventListener('click', () => {
+        document.getElementById('email').value    = 'demo@opseazy.com';
+        document.getElementById('password').value = 'Demo@123';
+        document.getElementById('login-form').dispatchEvent(
+          new Event('submit', { bubbles: true, cancelable: true })
+        );
+      });
+
+      // Toggle password
+      document.getElementById('toggle-pw').addEventListener('click', () => {
+        const pw = document.getElementById('password');
+        pw.type = pw.type === 'password' ? 'text' : 'password';
+      });
+
+      // Form submit
+      document.getElementById('login-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('btn-login');
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value;
+        const errEl = document.getElementById('form-error');
+        errEl.classList.add('hidden');
+
+        if (!email) { showFieldError('email', 'Email is required'); return; }
+        if (!password) { showFieldError('password', 'Password is required'); return; }
+
+        setButtonLoading(btn, true);
+        try {
+          const data = await api.login({ email, password });
+          Auth.setUser(data.user);
+          Toast.success('Welcome back!');
+          const p = getParams();
+          setTimeout(() => { window.location.href = p.redirect ? decodeURIComponent(p.redirect) : '/'; }, 600);
+        } catch (err) {
+          errEl.textContent = err.message || 'Invalid email or password';
+          errEl.classList.remove('hidden');
+        } finally {
+          setButtonLoading(btn, false, 'Log In');
+        }
+      });
+
+      function showFieldError(field, msg) {
+        const input = document.getElementById(field);
+        const errEl = document.getElementById(`${field}-error`);
+        input.classList.add('error');
+        errEl.textContent = msg;
+        errEl.classList.remove('hidden');
+        input.addEventListener('input', () => { input.classList.remove('error'); errEl.classList.add('hidden'); }, { once: true });
+      }
+    });
+  </script>
+</body>
+</html>

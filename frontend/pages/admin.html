@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — OPSEAZY</title>
+  <link rel="stylesheet" href="/css/theme.css">
+  <link rel="stylesheet" href="/css/navbar.css">
+  <style>
+    .admin-page { min-height: 100vh; background: var(--color-gray-50); }
+    .admin-header { background: var(--color-gray-900); padding: var(--space-6) 0; color: #fff; }
+    .admin-header h1 { color: #fff; font-size: 1.5rem; }
+    .admin-body { padding: var(--space-8) 0 var(--space-12); }
+    .admin-card { background: var(--color-white); border-radius: var(--radius-xl); border: 1px solid var(--color-gray-100); box-shadow: var(--shadow-card); overflow: hidden; }
+    .admin-card-header { padding: var(--space-5) var(--space-6); border-bottom: 1px solid var(--color-gray-100); display: flex; align-items: center; justify-content: space-between; }
+    .admin-table-wrapper { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; }
+    th { padding: 0.875rem var(--space-4); text-align: left; font-size: 0.75rem; font-weight: 700; color: var(--color-gray-500); text-transform: uppercase; letter-spacing: 0.05em; background: var(--color-gray-50); border-bottom: 1px solid var(--color-gray-200); white-space: nowrap; }
+    td { padding: 0.875rem var(--space-4); font-size: 0.9375rem; color: var(--color-gray-700); border-bottom: 1px solid var(--color-gray-100); white-space: nowrap; }
+    tr:hover td { background: var(--color-gray-50); }
+    .status-confirmed { color: var(--color-mint-dark); font-weight: 700; }
+    .status-cancelled { color: #DC2626; font-weight: 700; }
+    .status-pending   { color: var(--color-amber-dark); font-weight: 700; }
+    .pagination { display: flex; align-items: center; gap: var(--space-2); padding: var(--space-4) var(--space-6); justify-content: flex-end; }
+    .page-btn { padding: 0.4rem 0.75rem; border: 1.5px solid var(--color-gray-200); border-radius: var(--radius-md); background: transparent; font-size: 0.875rem; cursor: pointer; transition: all 150ms; }
+    .page-btn:hover { border-color: var(--color-sky); color: var(--color-sky); }
+    .page-btn.active { background: var(--color-sky); border-color: var(--color-sky); color: #fff; }
+  </style>
+</head>
+<body class="admin-page">
+
+  <div id="navbar-mount"></div>
+
+  <div class="admin-header">
+    <div class="container">
+      <h1>⚙ Admin Panel — All Bookings</h1>
+    </div>
+  </div>
+
+  <div class="admin-body">
+    <div class="container">
+      <div id="admin-loading" class="loading-state">
+        <div class="spinner spinner-lg"></div>
+        <p>Loading bookings…</p>
+      </div>
+      <div id="admin-content" class="hidden">
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <div>
+              <span style="font-weight:700;">All Bookings</span>
+              <span style="color:var(--color-gray-400);font-size:0.875rem;margin-left:0.75rem;" id="admin-total">— records</span>
+            </div>
+            <input type="text" id="admin-search" class="form-input" style="width:240px;" placeholder="Search PNR or email…">
+          </div>
+          <div class="admin-table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>PNR</th>
+                  <th>User</th>
+                  <th>Route</th>
+                  <th>Departure</th>
+                  <th>Class</th>
+                  <th>Pax</th>
+                  <th>Fare</th>
+                  <th>Status</th>
+                  <th>Booked</th>
+                </tr>
+              </thead>
+              <tbody id="admin-tbody"></tbody>
+            </table>
+          </div>
+          <div class="pagination" id="admin-pagination"></div>
+        </div>
+      </div>
+      <div id="admin-error" class="empty-state hidden">
+        <div class="empty-icon">🔒</div>
+        <h3>Access Denied</h3>
+        <p>You need admin privileges to view this page.</p>
+        <a href="/" class="btn btn-secondary" style="margin-top:1rem;">← Home</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/utils.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/toast.js"></script>
+  <script src="/js/navbar.js"></script>
+  <script>
+    let currentPage = 1;
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      renderNavbar('');
+      await Auth.tryRestoreSession();
+      if (!Auth.requireAuth()) return;
+
+      loadPage(1);
+
+      document.getElementById('admin-search').addEventListener('input', debounce((e) => {
+        const term = e.target.value.trim().toLowerCase();
+        document.querySelectorAll('#admin-tbody tr').forEach(row => {
+          row.style.display = term ? (row.textContent.toLowerCase().includes(term) ? '' : 'none') : '';
+        });
+      }, 250));
+    });
+
+    async function loadPage(page) {
+      document.getElementById('admin-loading').classList.remove('hidden');
+      document.getElementById('admin-content').classList.add('hidden');
+      document.getElementById('admin-error').classList.add('hidden');
+      try {
+        const data = await api.adminBookings(page);
+        document.getElementById('admin-loading').classList.add('hidden');
+        document.getElementById('admin-content').classList.remove('hidden');
+
+        const bookings = data.bookings || [];
+        const total = data.total || bookings.length;
+        const pages = data.pages || 1;
+        currentPage = data.page || page;
+
+        document.getElementById('admin-total').textContent = `${total} records`;
+
+        document.getElementById('admin-tbody').innerHTML = bookings.map(b => `
+          <tr>
+            <td style="font-weight:700;color:var(--color-violet);">${escHtml(b.pnr)}</td>
+            <td>${escHtml(b.user_name || '—')}<br><span style="font-size:0.8125rem;color:var(--color-gray-400);">${escHtml(b.user_email || '')}</span></td>
+            <td>${escHtml(b.origin_code)} → ${escHtml(b.destination_code)}</td>
+            <td>${formatDate(b.departure_date)}</td>
+            <td>${(b.cabin_class || '').replace('_', ' ')}</td>
+            <td>${b.passenger_count}</td>
+            <td style="font-weight:700;color:var(--color-orange);">${formatCurrency(b.total_fare, b.currency)}</td>
+            <td class="status-${b.status}">${b.status.toUpperCase()}</td>
+            <td style="color:var(--color-gray-400);font-size:0.8125rem;">${formatDateTime(b.created_at)}</td>
+          </tr>`).join('');
+
+        // Pagination
+        const pag = document.getElementById('admin-pagination');
+        pag.innerHTML = '';
+        for (let i = 1; i <= pages; i++) {
+          const btn = document.createElement('button');
+          btn.className = `page-btn${i === currentPage ? ' active' : ''}`;
+          btn.textContent = i;
+          btn.addEventListener('click', () => loadPage(i));
+          pag.appendChild(btn);
+        }
+      } catch (err) {
+        document.getElementById('admin-loading').classList.add('hidden');
+        if (err.status === 403 || err.status === 401) {
+          document.getElementById('admin-error').classList.remove('hidden');
+        } else {
+          Toast.error(err.message || 'Failed to load admin data');
+        }
+      }
+    }
+  </script>
+</body>
+</html>

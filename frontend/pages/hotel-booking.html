@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book Hotel — OPSEAZY</title>
+  <link rel="stylesheet" href="/css/theme.css">
+  <link rel="stylesheet" href="/css/navbar.css">
+  <link rel="stylesheet" href="/css/booking.css">
+  <link rel="stylesheet" href="/css/hotels.css">
+</head>
+<body class="hotel-booking-page">
+
+  <div id="navbar-mount"></div>
+
+  <!-- Step indicator -->
+  <div class="booking-steps">
+    <div class="container">
+      <div class="steps-list">
+        <div class="step-item active" id="step-1">
+          <div class="step-num">1</div>
+          <span>Guest Details</span>
+        </div>
+        <div class="step-connector" id="conn-1"></div>
+        <div class="step-item" id="step-2">
+          <div class="step-num">2</div>
+          <span>Payment</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="booking-body">
+    <div class="container">
+
+      <div id="booking-loading" class="loading-state">
+        <div class="spinner spinner-lg"></div>
+        <p>Loading hotel details…</p>
+      </div>
+
+      <!-- Step 1: Guest details -->
+      <div id="step-content-1" class="booking-layout hidden">
+        <div>
+          <!-- Hotel recap -->
+          <div class="booking-section" id="hotel-recap">
+            <div class="booking-section-header">
+              <div class="section-icon" style="background:var(--color-sky-light);color:var(--color-sky-dark);">🏨</div>
+              <h3>Your Hotel</h3>
+            </div>
+            <div class="booking-section-body" id="hotel-recap-body" style="padding:var(--space-4) var(--space-6);"></div>
+          </div>
+
+          <!-- Guest details form -->
+          <div class="booking-section">
+            <div class="booking-section-header">
+              <div class="section-icon section-icon-violet">👤</div>
+              <h3>Primary Guest</h3>
+            </div>
+            <div class="booking-section-body" style="padding:var(--space-5) var(--space-6);">
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label" for="guest-name">Full Name <span class="req">*</span></label>
+                  <input class="form-input" type="text" id="guest-name" placeholder="As on government ID" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="guest-email">Email Address <span class="req">*</span></label>
+                  <input class="form-input" type="email" id="guest-email" placeholder="booking@email.com" required>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label" for="guest-phone">Phone Number</label>
+                  <input class="form-input" type="tel" id="guest-phone" placeholder="+91 98765 43210">
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="guest-requests">Special Requests <span style="font-weight:400;color:var(--color-gray-400);">(optional)</span></label>
+                  <input class="form-input" type="text" id="guest-requests" placeholder="e.g. early check-in, sea-facing room">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <button class="btn btn-primary btn-lg" id="btn-next-step1" style="width:100%;margin-top:var(--space-2);">
+            Continue to Payment →
+          </button>
+        </div>
+
+        <!-- Price sidebar -->
+        <div>
+          <div class="fare-summary">
+            <div class="fare-summary-card">
+              <div class="fare-summary-header">
+                <h3>Price Summary</h3>
+                <div class="fare-flight-info" id="sidebar-hotel-name">—</div>
+              </div>
+              <div class="fare-breakdown" id="sidebar-breakdown"></div>
+              <div class="fare-line-total">
+                <span>Total</span>
+                <span class="fare-total-value" id="sidebar-total">—</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 2: Payment -->
+      <div id="step-content-2" class="booking-layout hidden">
+        <div>
+          <!-- Review card -->
+          <div class="booking-section">
+            <div class="booking-section-header">
+              <div class="section-icon section-icon-amber">📋</div>
+              <h3>Booking Review</h3>
+            </div>
+            <div class="booking-section-body" id="review-body" style="padding:var(--space-5) var(--space-6);"></div>
+          </div>
+
+          <!-- Payment form -->
+          <div class="booking-section">
+            <div class="booking-section-header">
+              <div class="section-icon section-icon-mint">💳</div>
+              <h3>Payment Details</h3>
+            </div>
+            <div class="booking-section-body" style="padding:var(--space-5) var(--space-6);">
+              <div class="payment-demo-badge">
+                ⚠ DEMO MODE — No real payment processed. Card details are not stored or transmitted.
+              </div>
+
+              <!-- Card visual -->
+              <div class="payment-card-visual">
+                <div class="card-chip">▣</div>
+                <div class="card-num-preview" id="card-num-preview">•••• •••• •••• ••••</div>
+                <div class="card-holder-preview">CARDHOLDER NAME</div>
+                <div class="card-holder-name-preview" id="card-holder-preview">YOUR NAME</div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group" style="grid-column:1/-1;">
+                  <label class="form-label" for="card-name">Name on Card</label>
+                  <input class="form-input" type="text" id="card-name" placeholder="Full name" autocomplete="cc-name">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="card-number">Card Number</label>
+                <input class="form-input" type="text" id="card-number" placeholder="4242 4242 4242 4242" maxlength="19" autocomplete="cc-number" inputmode="numeric">
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label" for="card-expiry">Expiry (MM/YY)</label>
+                  <input class="form-input" type="text" id="card-expiry" placeholder="12/28" maxlength="5" autocomplete="cc-exp">
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="card-cvv">CVV</label>
+                  <input class="form-input" type="text" id="card-cvv" placeholder="123" maxlength="4" inputmode="numeric">
+                </div>
+              </div>
+
+              <div class="form-error hidden" id="payment-error"></div>
+
+              <div style="display:flex;gap:var(--space-3);margin-top:var(--space-5);">
+                <button class="btn btn-outline btn-lg" id="btn-back-step2">← Back</button>
+                <button class="btn btn-primary btn-lg" id="btn-pay" style="flex:1;">
+                  🔒 Pay & Confirm Hotel
+                </button>
+              </div>
+
+              <p style="text-align:center;font-size:0.75rem;color:var(--color-gray-400);margin-top:var(--space-4);line-height:1.5;">
+                This is a demo booking. No real charges are made. Data is not transmitted to any payment processor.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Price sidebar -->
+        <div>
+          <div class="fare-summary">
+            <div class="fare-summary-card">
+              <div class="fare-summary-header">
+                <h3>Price Summary</h3>
+                <div class="fare-flight-info" id="sidebar-hotel-name-2">—</div>
+              </div>
+              <div class="fare-breakdown" id="sidebar-breakdown-2"></div>
+              <div class="fare-line-total">
+                <span>Total</span>
+                <span class="fare-total-value" id="sidebar-total-2">—</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="/js/utils.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/toast.js"></script>
+  <script src="/js/navbar.js"></script>
+  <script src="/js/hotel-booking.js"></script>
+</body>
+</html>

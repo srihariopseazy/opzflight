@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hotel Results — OPSEAZY</title>
+  <link rel="stylesheet" href="/css/theme.css">
+  <link rel="stylesheet" href="/css/navbar.css">
+  <link rel="stylesheet" href="/css/hotels.css">
+</head>
+<body class="hotel-results-page">
+
+  <div id="navbar-mount"></div>
+
+  <!-- Results header -->
+  <div class="hotel-results-header">
+    <div class="container">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+        <div>
+          <h2 id="results-city-title">Hotels in —</h2>
+          <div class="hotel-results-meta" id="results-meta"></div>
+        </div>
+        <a href="/" class="btn btn-outline" style="border-color:rgba(255,255,255,0.4);color:#fff;">
+          ← Modify Search
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="hotel-results-layout">
+
+      <!-- Filter sidebar -->
+      <aside class="hotel-filter-sidebar" id="filter-sidebar">
+        <div class="hotel-filter-title">
+          Filters
+          <button id="btn-reset-filters" style="font-size:0.75rem;font-weight:600;color:var(--color-sky);background:none;border:none;cursor:pointer;">Reset</button>
+        </div>
+
+        <div class="hotel-filter-section">
+          <div class="hotel-filter-section-label">Star Rating</div>
+          <div class="filter-star-row" id="star-filter-row">
+            <button class="filter-star-btn active" data-stars="0">All</button>
+            <button class="filter-star-btn" data-stars="2">★★</button>
+            <button class="filter-star-btn" data-stars="3">★★★</button>
+            <button class="filter-star-btn" data-stars="4">★★★★</button>
+            <button class="filter-star-btn" data-stars="5">★★★★★</button>
+          </div>
+        </div>
+
+        <div class="hotel-filter-section">
+          <div class="hotel-filter-section-label">Max Price / Night</div>
+          <div class="price-range-wrapper">
+            <input type="range" class="price-range-input" id="price-filter" min="0" max="200000" step="1000" value="200000">
+            <div class="price-range-labels">
+              <span>₹0</span>
+              <span id="price-filter-label">Any</span>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main results -->
+      <div>
+        <div id="results-loading" class="loading-state" style="padding:var(--space-16) 0;">
+          <div class="spinner spinner-lg"></div>
+          <p>Finding available hotels…</p>
+        </div>
+        <div id="results-empty" class="empty-state hidden">
+          <div class="empty-icon">🏨</div>
+          <h3>No hotels found</h3>
+          <p>Try a different city from the list: Mumbai, Delhi, Goa, Bangalore, Jaipur, Chennai, Dubai, Singapore, Bangkok.</p>
+          <a href="/" class="btn btn-secondary" style="margin-top:1rem;">← Back to Search</a>
+        </div>
+        <div id="results-count" style="font-size:0.875rem;color:var(--color-gray-500);margin-bottom:var(--space-4);"></div>
+        <div class="hotel-cards-grid" id="hotel-grid"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/utils.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/toast.js"></script>
+  <script src="/js/navbar.js"></script>
+  <script src="/js/hotel-results.js"></script>
+</body>
+</html>
